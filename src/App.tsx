@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Check,
-  Calculator as CalcIcon,
   Zap,
   Target,
   Cog,
@@ -18,9 +17,9 @@ import {
   X,
 } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import { ThoughtsMarquee } from "@/components/ThoughtsMarquee";
 import { VantixLogo, VantixMark } from "@/components/VantixLogo";
 import { ThemeToggle, LanguageSwitcher } from "@/components/PrefsControls";
-import { Blueprint } from "@/components/Blueprint";
 import { SitePrefsProvider, useSitePrefs } from "@/lib/site-prefs";
 
 export default function App() {
@@ -44,7 +43,6 @@ function Page() {
       <Story />
       <AgencyCallout />
       <Solution />
-      <Blueprint />
       <Process />
       <Pricing />
       <FAQ />
@@ -269,7 +267,7 @@ function Story() {
   const { t } = useSitePrefs();
   return (
     <section id="problem" className="bg-background">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 sm:py-24 md:grid-cols-5 md:gap-16 md:py-32">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-10 pt-20 sm:px-6 sm:pb-12 sm:pt-24 md:grid-cols-5 md:gap-16 md:pt-32">
         <Reveal className="md:col-span-2">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.story.eyebrow}
@@ -290,6 +288,14 @@ function Story() {
           </p>
           <p>{t.story.p3}</p>
         </Reveal>
+      </div>
+      <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24 md:pb-28">
+        <Reveal>
+          <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
+            Jak o tym myślę
+          </span>
+        </Reveal>
+        <ThoughtsMarquee />
       </div>
     </section>
   );
@@ -549,12 +555,6 @@ function FinalCTA() {
               >
                 {t.finalCta.cta1}
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="/audyt.html"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-primary-foreground/20 px-5 py-3 text-sm font-medium text-primary-foreground transition hover:border-accent-brand hover:bg-primary-foreground/5"
-              >
-                <CalcIcon className="h-4 w-4" /> {t.finalCta.cta2}
               </a>
             </div>
           </div>

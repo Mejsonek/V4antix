@@ -335,3 +335,30 @@
   .vx-progress { transition: none; }
   .vx-choice:active { transform: none; }
 }
+
+/* ---- przewijające się kafelki myśli ---- */
+
+.vx-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 4%, black 88%, transparent);
+}
+
+@keyframes vx-marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.vx-marquee-track {
+  width: max-content;
+  animation: vx-marquee-scroll 55s linear infinite;
+}
+
+.vx-marquee:hover .vx-marquee-track,
+.vx-marquee:focus-within .vx-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vx-marquee { mask-image: none; overflow-x: auto; }
+  .vx-marquee-track { animation: none; }
+}
