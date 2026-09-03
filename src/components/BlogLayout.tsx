@@ -13,6 +13,7 @@ type Props = {
 export function BlogLayout({ title, eyebrow, date, children }: Props) {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div aria-hidden className="pointer-events-none fixed inset-0 vx-blueprint-grid" />
       <div
         aria-hidden
         className="pointer-events-none absolute -right-24 top-24 hidden h-[420px] w-[420px] opacity-[0.05] lg:block"

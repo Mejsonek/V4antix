@@ -20,6 +20,7 @@ import {
 import { Reveal } from "@/components/Reveal";
 import { VantixLogo, VantixMark } from "@/components/VantixLogo";
 import { ThemeToggle, LanguageSwitcher } from "@/components/PrefsControls";
+import { Blueprint } from "@/components/Blueprint";
 import { SitePrefsProvider, useSitePrefs } from "@/lib/site-prefs";
 
 export default function App() {
@@ -43,6 +44,7 @@ function Page() {
       <Story />
       <AgencyCallout />
       <Solution />
+      <Blueprint />
       <Process />
       <Pricing />
       <FAQ />

@@ -194,3 +194,118 @@
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   * { animation: none !important; }
 }
+
+/* ---- neon blueprint / siatka techniczna ---- */
+
+@utility vx-blueprint-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--accent-brand) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--accent-brand) 10%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 25%, transparent 78%);
+}
+
+.dark .vx-blueprint-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--accent-brand) 18%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--accent-brand) 18%, transparent) 1px, transparent 1px);
+}
+
+/* przewód, który "wypełnia się" wraz z przewijaniem */
+.vx-trace {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--accent-brand) 15%, transparent),
+    var(--accent-brand)
+  );
+  box-shadow: 0 0 12px color-mix(in oklab, var(--accent-brand) 55%, transparent);
+  transition: height 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* aktywny węzeł instalacji */
+.vx-node-on {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent-brand) 30%, transparent),
+    0 0 22px -6px color-mix(in oklab, var(--accent-brand) 60%, transparent);
+}
+
+/* delikatny puls przy zapaleniu węzła */
+@keyframes vx-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-brand) 40%, transparent); }
+  100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+.vx-node-on::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: vx-pulse 1600ms ease-out 1;
+}
+
+/* ---- kafelki wpisów na blogu ---- */
+
+@utility vx-post {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms ease,
+    box-shadow 400ms ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--accent-brand),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--accent-brand) 12%, transparent),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 400ms ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--accent-brand) 38%, var(--border));
+    box-shadow: 0 18px 44px -26px color-mix(in oklab, var(--accent-brand) 70%, transparent);
+  }
+
+  &:hover::before { opacity: 1; }
+  &:hover::after { opacity: 1; }
+}
+
+@utility vx-post-index {
+  font-variant-numeric: tabular-nums;
+  transition: color 400ms ease, transform 400ms ease;
+}
+
+.vx-post:hover .vx-post-index {
+  color: var(--accent-brand);
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vx-trace { transition: none; }
+  .vx-node-on::after { animation: none; }
+  .vx-post:hover { transform: none; }
+}
