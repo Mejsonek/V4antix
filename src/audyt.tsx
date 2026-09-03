@@ -8,7 +8,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { VantixLogo, VantixMark } from "@/components/VantixLogo";
-import { ThemeToggle } from "@/components/PrefsControls";
+import { ThemeToggle, LanguageSwitcher } from "@/components/PrefsControls";
+import { useSitePrefs } from "@/lib/site-prefs";
+import { AUDYT } from "@/lib/content-pages";
 import { analyze } from "@/lib/analiza";
 import { mount } from "@/lib/mount";
 
@@ -17,181 +19,6 @@ const DRAFT_KEY = "vantix.audyt.draft";
 const SUBMIT_KEY = "vantix.audyt.submitted";
 
 type Answers = Record<string, string | string[] | number>;
-
-type Step =
-  | {
-      kind: "single" | "multi";
-      id: string;
-      eyebrow: string;
-      question: string;
-      hint?: string;
-      options: { value: string; label: string; note?: string }[];
-      optional?: boolean;
-    }
-  | {
-      kind: "numbers";
-      id: string;
-      eyebrow: string;
-      question: string;
-      hint?: string;
-      fields: { id: string; label: string; suffix?: string; default: number; step?: number }[];
-    }
-  | { kind: "contact"; id: string; eyebrow: string; question: string; hint?: string };
-
-const STEPS: Step[] = [
-  {
-    kind: "single",
-    id: "branza",
-    eyebrow: "Twoja firma",
-    question: "Czym się zajmujesz?",
-    hint: "Dopasowuję dalsze pytania do Twojej branży.",
-    options: [
-      { value: "instalacje", label: "Instalacje / montaż", note: "klima, hydraulika, elektryka, fotowoltaika" },
-      { value: "budowlanka", label: "Budowlanka / wykończenia" },
-      { value: "uslugi-prof", label: "Usługi profesjonalne", note: "kancelaria, biuro rachunkowe, doradztwo" },
-      { value: "it", label: "IT / software / agencja" },
-      { value: "ecom", label: "E-commerce / handel" },
-      { value: "inne", label: "Coś innego" },
-    ],
-  },
-  {
-    kind: "single",
-    id: "wielkosc",
-    eyebrow: "Skala",
-    question: "Ile osób pracuje w firmie?",
-    options: [
-      { value: "1", label: "Tylko ja" },
-      { value: "2-5", label: "2–5 osób" },
-      { value: "6-15", label: "6–15 osób" },
-      { value: "16-50", label: "16–50 osób" },
-      { value: "50+", label: "Powyżej 50" },
-    ],
-  },
-  {
-    kind: "single",
-    id: "sprzedaz",
-    eyebrow: "Skala",
-    question: "Kto u Was sprzedaje?",
-    options: [
-      { value: "wlasciciel", label: "Ja sam", note: "sprzedaż między jedną robotą a drugą" },
-      { value: "1-handlowiec", label: "Jeden handlowiec" },
-      { value: "zespol", label: "Zespół handlowy" },
-      { value: "nikt", label: "Nikt konkretnie", note: "klienci przychodzą sami" },
-    ],
-  },
-  {
-    kind: "multi",
-    id: "kanaly",
-    eyebrow: "Pozyskiwanie",
-    question: "Skąd dziś przychodzą klienci?",
-    hint: "Zaznacz wszystko, co realnie działa.",
-    options: [
-      { value: "polecenia", label: "Polecenia" },
-      { value: "google", label: "Google / SEO" },
-      { value: "ads", label: "Reklamy płatne" },
-      { value: "social", label: "Social media" },
-      { value: "cold", label: "Cold outreach / telefon" },
-      { value: "targi", label: "Targi, lokalnie, offline" },
-      { value: "marketplace", label: "Portale branżowe / marketplace" },
-    ],
-  },
-  {
-    kind: "multi",
-    id: "narzedzia",
-    eyebrow: "Co już masz",
-    question: "Co z tego jest u Was wdrożone?",
-    hint: "Szczerze — brak czegoś nie jest wstydem, to punkt wyjścia.",
-    options: [
-      { value: "strona", label: "Strona www" },
-      { value: "crm", label: "CRM" },
-      { value: "followup", label: "Automatyczny follow-up" },
-      { value: "kalendarz", label: "Kalendarz do umawiania" },
-      { value: "oferty", label: "Szablony ofert" },
-      { value: "analityka", label: "Analityka / mierzenie kosztu leada" },
-      { value: "nic", label: "Praktycznie nic z powyższych" },
-    ],
-  },
-  {
-    kind: "numbers",
-    id: "liczby",
-    eyebrow: "Liczby",
-    question: "Kilka liczb — szacunkowo, na oko.",
-    hint: "Nie muszą być co do złotówki. Chodzi o rząd wielkości.",
-    fields: [
-      { id: "zapytania", label: "Zapytań miesięcznie", default: 15, step: 1 },
-      { id: "closeRate", label: "Ile % kończy się zleceniem", suffix: "%", default: 25, step: 5 },
-      { id: "wartosc", label: "Średnia wartość zlecenia", suffix: "zł", default: 4000, step: 500 },
-    ],
-  },
-  {
-    kind: "single",
-    id: "reakcja",
-    eyebrow: "Proces",
-    question: "Po jakim czasie odzywacie się do nowego zapytania?",
-    hint: "To zwykle najdroższy punkt całego lejka.",
-    options: [
-      { value: "minuty", label: "W kilka minut" },
-      { value: "godziny", label: "Tego samego dnia" },
-      { value: "dzien", label: "Następnego dnia" },
-      { value: "dluzej", label: "Bywa, że dłużej" },
-      { value: "nie-wiem", label: "Nie mierzymy tego" },
-    ],
-  },
-  {
-    kind: "single",
-    id: "followup",
-    eyebrow: "Proces",
-    question: "Co się dzieje, gdy klient nie odpowie na ofertę?",
-    options: [
-      { value: "sekwencja", label: "Leci zaplanowana sekwencja przypomnień" },
-      { value: "recznie", label: "Ktoś odzywa się ręcznie, jak pamięta" },
-      { value: "nic", label: "Nic — czekamy, aż sam wróci" },
-    ],
-  },
-  {
-    kind: "multi",
-    id: "problemy",
-    eyebrow: "Problem",
-    question: "Co Cię najbardziej uwiera?",
-    hint: "Maksymalnie trzy — te najważniejsze.",
-    options: [
-      { value: "za-malo", label: "Za mało zapytań" },
-      { value: "slabe", label: "Zapytania słabej jakości" },
-      { value: "nie-domykam", label: "Zapytania są, ale nie domykam" },
-      { value: "chaos", label: "Chaos — leady giną" },
-      { value: "sezon", label: "Skoki: raz zalew, raz pustka" },
-      { value: "czas", label: "Brak czasu na sprzedaż" },
-      { value: "koszt", label: "Reklamy przepalają budżet" },
-    ],
-  },
-  {
-    kind: "single",
-    id: "gotowosc",
-    eyebrow: "Następny krok",
-    question: "Kiedy chciałbyś to ruszyć?",
-    options: [
-      { value: "teraz", label: "Od razu" },
-      { value: "miesiac", label: "W ciągu miesiąca" },
-      { value: "kwartal", label: "W tym kwartale" },
-      { value: "rozgladam", label: "Na razie się rozglądam" },
-    ],
-  },
-  {
-    kind: "contact",
-    id: "kontakt",
-    eyebrow: "Ostatni krok",
-    question: "Gdzie mam wysłać analizę?",
-    hint: "Odezwę się osobiście — nie trafisz na żadną listę mailingową.",
-  },
-];
-
-const HOURS = [
-  { value: "rano", label: "Rano", note: "8:00–11:00" },
-  { value: "poludnie", label: "Południe", note: "11:00–14:00" },
-  { value: "popoludnie", label: "Popołudnie", note: "14:00–17:00" },
-  { value: "wieczor", label: "Wieczorem", note: "po 17:00" },
-  { value: "dowolnie", label: "Obojętnie", note: "dopasuję się" },
-];
 
 function fmt(n: number) {
   return new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -202,6 +29,10 @@ function uid() {
 }
 
 export default function Audyt() {
+  const { locale } = useSitePrefs();
+  const D = AUDYT[locale];
+  const STEPS = D.steps;
+  const HOURS = D.hours;
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
     zapytania: 15,
@@ -260,6 +91,10 @@ export default function Audyt() {
     }
   }, [step, answers, name, firma, email, phone, hours, sms, status]);
 
+  useEffect(() => {
+    document.title = D.metaTitle;
+  }, [D.metaTitle]);
+
   const current = STEPS[step];
   const progress = ((step + (status === "sent" ? 1 : 0)) / STEPS.length) * 100;
 
@@ -285,11 +120,15 @@ export default function Audyt() {
     });
   }
 
+  const MULTI = ["kanaly", "narzedzia", "problemy"];
+  const kind =
+    current.id === "kontakt" ? "contact" : current.fields ? "numbers" : MULTI.includes(current.id) ? "multi" : "single";
+
   function canAdvance() {
-    if (current.kind === "single") return Boolean(answers[current.id]);
-    if (current.kind === "multi")
-      return current.optional || (Array.isArray(answers[current.id]) && (answers[current.id] as string[]).length > 0);
-    if (current.kind === "numbers") return true;
+    if (kind === "single") return Boolean(answers[current.id]);
+    if (kind === "multi")
+      return Array.isArray(answers[current.id]) && (answers[current.id] as string[]).length > 0;
+    if (kind === "numbers") return true;
     return Boolean(firma && email);
   }
 
@@ -351,11 +190,10 @@ export default function Audyt() {
         <div className="rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">
           <div className="flex items-center gap-2 text-foreground">
             <Check className="h-5 w-5 text-accent-brand" strokeWidth={2.5} />
-            <span className="font-semibold">Ten audyt jest już u mnie.</span>
+            <span className="font-semibold">{D.already.title}</span>
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Widzę, że wypełniałeś go z tego urządzenia. Nie musisz robić tego drugi raz —
-            odezwę się w umówionych godzinach. Jeśli chcesz coś dopowiedzieć, napisz wprost:{" "}
+            {D.already.body}{" "}
             <a href="mailto:kacper@vantix.pl" className="text-accent-brand underline">
               kacper@vantix.pl
             </a>
@@ -374,7 +212,7 @@ export default function Audyt() {
             }}
             className="mt-5 text-sm font-medium text-accent-brand underline"
           >
-            Wypełnij jeszcze raz dla innej firmy
+            {D.already.again}
           </button>
         </div>
       </Shell>
@@ -382,7 +220,7 @@ export default function Audyt() {
   }
 
   if (status === "sent") {
-    const a = analyze(answers);
+    const a = analyze(answers, locale);
     return (
       <Shell>
         <div className="rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">
@@ -390,38 +228,30 @@ export default function Audyt() {
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-brand text-accent-brand-foreground">
               <Check className="h-5 w-5" strokeWidth={2.5} />
             </span>
-            <span className="text-lg font-semibold text-foreground">Mam wszystko.</span>
+            <span className="text-lg font-semibold text-foreground">{D.done.title}</span>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground sm:text-base">
-            Dzięki{name ? `, ${name}` : ""} — pełną analizę dla firmy{" "}
-            <strong className="font-semibold">{firma}</strong> przygotuję osobiście i odezwę się
-            na <strong className="font-semibold">{email}</strong>
-            {phone ? " lub telefonicznie" : ""}
-            {hours.length
-              ? ` (${hours.map((h) => HOURS.find((x) => x.value === h)?.label).join(", ").toLowerCase()})`
-              : ""}
-            .
+            {D.done.body(name, firma, email)}
           </p>
         </div>
 
         <div className="mt-8">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
-            Twoja wstępna analiza
+            {D.done.eyebrow}
           </span>
           <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-            To widzę już teraz — bez czekania na rozmowę.
+            {D.done.heading}
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Poniżej konkrety wyliczone z Twoich odpowiedzi. Zabierz je ze sobą nawet jeśli nigdy
-            nie zaczniemy współpracy.
+            {D.done.lead}
           </p>
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           {[
-            { k: "Dziś", v: a.scenariusz.teraz, note: "z Twoich liczb" },
-            { k: "+5 pkt skuteczności", v: a.scenariusz.plus5, note: "realne w kilka tygodni" },
-            { k: "+10 pkt skuteczności", v: a.scenariusz.plus10, note: "cel na kwartał" },
+            { k: D.done.now, v: a.scenariusz.teraz, note: D.done.noteNow },
+            { k: D.done.plus5, v: a.scenariusz.plus5, note: D.done.note5 },
+            { k: D.done.plus10, v: a.scenariusz.plus10, note: D.done.note10 },
           ].map((s2, i) => (
             <div
               key={s2.k}
@@ -440,8 +270,7 @@ export default function Audyt() {
           ))}
         </div>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          Ten sam ruch, ten sam zespół — różnica bierze się wyłącznie z procesu. Liczby są
-          poglądowe i opierają się na tym, co sam podałeś.
+          {D.done.disclaimer}
         </p>
 
         <div className="mt-8 space-y-3">
@@ -457,9 +286,9 @@ export default function Audyt() {
                 </span>
                 <span
                   className={`rounded-md px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
-                    f.severity === "krytyczne"
+                    f.tone === "kryt"
                       ? "bg-destructive/10 text-destructive"
-                      : f.severity === "dobre"
+                      : f.tone === "dobre"
                         ? "bg-accent-brand/10 text-accent-brand"
                         : "bg-surface-muted text-muted-foreground"
                   }`}
@@ -481,13 +310,10 @@ export default function Audyt() {
         {a.priorytet && (
           <div className="mt-8 rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6">
             <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-accent-brand">
-              <Sparkles className="h-3.5 w-3.5" /> Od czego zacząć
+              <Sparkles className="h-3.5 w-3.5" /> {D.done.priorityTitle}
             </div>
             <p className="mt-3 text-sm leading-relaxed text-foreground sm:text-base">
-              Gdybyś miał zmienić dziś jedną rzecz, zacznij od tego:{" "}
-              <strong className="font-semibold">{a.priorytet.title.toLowerCase()}</strong>. To
-              zwykle najszybszy zwrot przy najmniejszym nakładzie — i nie wymaga zwiększania
-              budżetu na reklamę.
+              {D.done.priorityBody(a.priorytet.title)}
             </p>
           </div>
         )}
@@ -497,13 +323,13 @@ export default function Audyt() {
             href="/blog/"
             className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
           >
-            Poczytaj blog w międzyczasie
+            {D.done.blogCta}
           </a>
           <a
             href="/"
             className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
           >
-            Wróć na stronę
+            {D.done.homeCta}
           </a>
         </div>
       </Shell>
@@ -540,9 +366,9 @@ export default function Audyt() {
         )}
 
         <div className="mt-6">
-          {current.kind === "single" && (
+          {kind === "single" && (
             <div className="grid gap-2.5">
-              {current.options.map((o) => {
+              {(current.options ?? []).map((o) => {
                 const on = answers[current.id] === o.value;
                 return (
                   <button
@@ -582,9 +408,9 @@ export default function Audyt() {
             </div>
           )}
 
-          {current.kind === "multi" && (
+          {kind === "multi" && (
             <div className="grid gap-2.5">
-              {current.options.map((o) => {
+              {(current.options ?? []).map((o) => {
                 const cur = Array.isArray(answers[current.id])
                   ? (answers[current.id] as string[])
                   : [];
@@ -627,17 +453,17 @@ export default function Audyt() {
             </div>
           )}
 
-          {current.kind === "numbers" && (
+          {kind === "numbers" && (
             <div className="grid gap-4">
-              {current.fields.map((f) => (
+              {(current.fields ?? []).map((f) => (
                 <label key={f.id} className="block rounded-xl border border-border bg-card p-4">
                   <span className="text-xs font-medium text-muted-foreground">{f.label}</span>
                   <span className="mt-2 flex items-center gap-2">
                     <input
                       type="number"
                       inputMode="numeric"
-                      step={f.step}
-                      value={Number(answers[f.id] ?? f.default)}
+                      step={f.id === "wartosc" ? 500 : f.id === "closeRate" ? 5 : 1}
+                      value={Number(answers[f.id] ?? 0)}
                       onChange={(e) =>
                         setAnswers((a) => ({ ...a, [f.id]: Number(e.target.value) || 0 }))
                       }
@@ -651,33 +477,33 @@ export default function Audyt() {
               ))}
               <div className="rounded-xl border border-accent-brand/30 bg-accent-brand/5 p-4">
                 <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-accent-brand">
-                  <Sparkles className="h-3.5 w-3.5" /> Na żywo
+                  <Sparkles className="h-3.5 w-3.5" /> {D.live}
                 </div>
                 <div className="mt-2 text-lg font-semibold tracking-tight text-foreground">
                   {fmt(wynik.teraz)} zł / mies.
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Tyle mniej więcej robi dziś Twój lejek. Pełne wyliczenie zobaczysz w analizie.
+                  {D.liveNote}
                 </p>
               </div>
             </div>
           )}
 
-          {current.kind === "contact" && (
+          {kind === "contact" && (
             <div className="grid gap-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input label="Imię" value={name} onChange={setName} placeholder="Jak się do Ciebie zwracać" />
-                <Input label="Firma *" value={firma} onChange={setFirma} required />
-                <Input label="E-mail *" value={email} onChange={setEmail} type="email" required />
-                <Input label="Telefon" value={phone} onChange={setPhone} type="tel" placeholder="opcjonalnie" />
+                <Input label={D.contact.name} value={name} onChange={setName} />
+                <Input label={D.contact.firma} value={firma} onChange={setFirma} required />
+                <Input label={D.contact.email} value={email} onChange={setEmail} type="email" required />
+                <Input label={D.contact.phone} value={phone} onChange={setPhone} type="tel" placeholder={D.contact.phoneHint} />
               </div>
 
               <div className="rounded-xl border border-border bg-card p-4">
                 <span className="text-sm font-semibold text-foreground">
-                  Kiedy najlepiej dzwonić?
+                  {D.contact.hoursTitle}
                 </span>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Zaznacz, co Ci pasuje — nie zadzwonię poza tymi godzinami.
+                  {D.contact.hoursNote}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {HOURS.map((h) => {
@@ -709,7 +535,7 @@ export default function Audyt() {
 
               <div className="rounded-xl border border-border bg-card p-4">
                 <span className="text-sm font-semibold text-foreground">
-                  Wysłać SMS-em przypomnienie o umówionym terminie?
+                  {D.contact.smsTitle}
                 </span>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {(["tak", "nie"] as const).map((v) => (
@@ -723,21 +549,20 @@ export default function Audyt() {
                           : "border-border text-muted-foreground hover:border-accent-brand/50"
                       }`}
                     >
-                      {v === "tak" ? "Tak, chętnie" : "Nie, tylko mail"}
+                      {v === "tak" ? D.contact.smsYes : D.contact.smsNo}
                     </button>
                   ))}
                 </div>
                 {sms === "tak" && !phone && (
                   <p className="mt-2 text-xs text-destructive">
-                    Podaj numer telefonu wyżej, inaczej nie mam gdzie wysłać SMS-a.
+                    {D.contact.smsWarn}
                   </p>
                 )}
               </div>
 
               <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
                 <ShieldCheck className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-accent-brand" />
-                Dane trafiają wyłącznie do mnie i służą do przygotowania analizy oraz kontaktu.
-                Nie dopisuję nikogo do newslettera i nie przekazuję danych dalej.
+                {D.contact.privacy}
               </p>
             </div>
           )}
@@ -750,10 +575,10 @@ export default function Audyt() {
             disabled={step === 0}
             className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground disabled:pointer-events-none disabled:opacity-0"
           >
-            <ArrowLeft className="h-4 w-4" /> Wstecz
+            <ArrowLeft className="h-4 w-4" /> {D.nav.back}
           </button>
 
-          {current.kind === "contact" ? (
+          {kind === "contact" ? (
             <button
               type="button"
               onClick={submit}
@@ -762,11 +587,11 @@ export default function Audyt() {
             >
               {status === "sending" ? (
                 <>
-                  <LoaderCircle className="h-4 w-4 animate-spin" /> Wysyłam…
+                  <LoaderCircle className="h-4 w-4 animate-spin" /> {D.nav.sending}
                 </>
               ) : (
                 <>
-                  Wyślij i umów audyt <ArrowRight className="h-4 w-4" />
+                  {D.nav.submit} <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </button>
@@ -777,14 +602,14 @@ export default function Audyt() {
               disabled={!canAdvance()}
               className="vx-btn-accent inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-6 py-3 text-sm font-semibold text-accent-brand-foreground disabled:opacity-40"
             >
-              Dalej <ArrowRight className="h-4 w-4" />
+              {D.nav.next} <ArrowRight className="h-4 w-4" />
             </button>
           )}
         </div>
 
         {status === "error" && (
           <p className="mt-4 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
-            Nie udało się wysłać ({errorMsg}). Spróbuj jeszcze raz albo napisz wprost:{" "}
+            {D.error(errorMsg)}{" "}
             <a href="mailto:kacper@vantix.pl" className="underline">
               kacper@vantix.pl
             </a>
@@ -810,7 +635,10 @@ function Shell({ children }: { children: React.ReactNode }) {
           <a href="/">
             <VantixLogo />
           </a>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <main className="relative mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">{children}</main>

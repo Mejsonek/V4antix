@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { VantixLogo, VantixMark } from "@/components/VantixLogo";
-import { ThemeToggle } from "@/components/PrefsControls";
+import { ThemeToggle, LanguageSwitcher } from "@/components/PrefsControls";
+import { useSitePrefs } from "@/lib/site-prefs";
+import { BLOG_UI } from "@/lib/content-pages";
 
 type Props = {
   title: string;
@@ -11,6 +13,8 @@ type Props = {
 };
 
 export function BlogLayout({ title, eyebrow, date, children }: Props) {
+  const { locale } = useSitePrefs();
+  const ui = BLOG_UI[locale];
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div aria-hidden className="pointer-events-none fixed inset-0 vx-blueprint-grid" />
@@ -25,7 +29,10 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
           <a href="/">
             <VantixLogo />
           </a>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <main className="relative mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
@@ -33,7 +40,7 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
           href="/blog/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-accent-brand"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Wszystkie wpisy
+          <ArrowLeft className="h-3.5 w-3.5" /> {ui.back}
         </a>
         <span className="mt-6 block text-xs font-medium uppercase tracking-widest text-accent-brand">
           {eyebrow}
@@ -47,14 +54,13 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
         </article>
         <div className="mt-12 rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">
           <p className="text-sm font-semibold text-foreground sm:text-base">
-            Jeśli Twoja firma żyje dziś głównie z poleceń, sprawdź, ile Cię to realnie kosztuje —
-            kilka pytań, konkretna analiza na końcu.
+            {ui.ctaText}
           </p>
           <a
             href="/audyt.html"
             className="vx-btn-accent mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-2.5 text-sm font-medium text-accent-brand-foreground"
           >
-            Zrób bezpłatny audyt <ArrowRight className="h-4 w-4" />
+            {ui.ctaButton} <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </main>
