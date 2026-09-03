@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import fs from "node:fs";
 
-const roots = ["index.html", "kalkulator.html", "audyt.html"];
+const roots = ["index.html", "audyt.html"];
 const blogPages = fs
   .readdirSync(path.resolve(__dirname, "blog"))
   .filter((f) => f.endsWith(".html"))

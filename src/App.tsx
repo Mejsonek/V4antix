@@ -588,7 +588,7 @@ function Footer() {
               </li>
               <li>
                 <a href="/audyt.html" className="transition hover:text-foreground">
-                  Kalkulator
+                  Bezpłatny audyt
                 </a>
               </li>
               <li>

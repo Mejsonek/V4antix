@@ -4,7 +4,7 @@ import { Megaphone, MousePointerClick, Calculator, UserPlus, Mail, Database, Cal
 const NODES = [
   { id: "ruch", icon: Megaphone, label: "Ruch", detail: "Ads · cold reach · social", meta: "wejście" },
   { id: "landing", icon: MousePointerClick, label: "Landing", detail: "Strona pod konwersję", meta: "24/7" },
-  { id: "kalkulator", icon: Calculator, label: "Kalkulator", detail: "Klient liczy sam", meta: "kwalifikacja" },
+  { id: "audyt", icon: Calculator, label: "Audyt", detail: "Klient sam liczy swoje liczby", meta: "kwalifikacja" },
   { id: "lead", icon: UserPlus, label: "Lead", detail: "Imię · firma · wynik", meta: "webhook" },
   { id: "email", icon: Mail, label: "E-mail", detail: "Spersonalizowana analiza", meta: "auto" },
   { id: "crm", icon: Database, label: "CRM", detail: "Notion · status · historia", meta: "sync" },

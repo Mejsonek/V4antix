@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { VantixLogo, VantixMark } from "@/components/VantixLogo";
 import { ThemeToggle } from "@/components/PrefsControls";
+import { analyze } from "@/lib/analiza";
 import { mount } from "@/lib/mount";
 
 const WEBHOOK_URL = "https://v4ntix.app.n8n.cloud/webhook/vantix-audyt";
@@ -381,6 +382,7 @@ export default function Audyt() {
   }
 
   if (status === "sent") {
+    const a = analyze(answers);
     return (
       <Shell>
         <div className="rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">
@@ -391,39 +393,118 @@ export default function Audyt() {
             <span className="text-lg font-semibold text-foreground">Mam wszystko.</span>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground sm:text-base">
-            Dzięki, {name || "dzięki za czas"} — analizę dla firmy{" "}
+            Dzięki{name ? `, ${name}` : ""} — pełną analizę dla firmy{" "}
             <strong className="font-semibold">{firma}</strong> przygotuję osobiście i odezwę się
             na <strong className="font-semibold">{email}</strong>
             {phone ? " lub telefonicznie" : ""}
-            {hours.length ? ` (${hours.map((h) => HOURS.find((x) => x.value === h)?.label).join(", ").toLowerCase()})` : ""}.
+            {hours.length
+              ? ` (${hours.map((h) => HOURS.find((x) => x.value === h)?.label).join(", ").toLowerCase()})`
+              : ""}
+            .
           </p>
-          <div className="mt-6 rounded-xl border border-border bg-card p-5">
-            <div className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              Wstępnie, z Twoich liczb
+        </div>
+
+        <div className="mt-8">
+          <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
+            Twoja wstępna analiza
+          </span>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            To widzę już teraz — bez czekania na rozmowę.
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Poniżej konkrety wyliczone z Twoich odpowiedzi. Zabierz je ze sobą nawet jeśli nigdy
+            nie zaczniemy współpracy.
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          {[
+            { k: "Dziś", v: a.scenariusz.teraz, note: "z Twoich liczb" },
+            { k: "+5 pkt skuteczności", v: a.scenariusz.plus5, note: "realne w kilka tygodni" },
+            { k: "+10 pkt skuteczności", v: a.scenariusz.plus10, note: "cel na kwartał" },
+          ].map((s2, i) => (
+            <div
+              key={s2.k}
+              className={`rounded-xl border p-4 ${
+                i === 0 ? "border-border bg-card" : "border-accent-brand/30 bg-accent-brand/5"
+              }`}
+            >
+              <div className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                {s2.k}
+              </div>
+              <div className="mt-1.5 text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+                {fmt(s2.v)} zł
+              </div>
+              <div className="mt-0.5 text-[11px] text-muted-foreground">{s2.note}</div>
             </div>
-            <div className="mt-2 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              {fmt(wynik.roznica)} zł / mies.
+          ))}
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          Ten sam ruch, ten sam zespół — różnica bierze się wyłącznie z procesu. Liczby są
+          poglądowe i opierają się na tym, co sam podałeś.
+        </p>
+
+        <div className="mt-8 space-y-3">
+          {a.findings.map((f, i) => (
+            <div
+              key={f.title}
+              className="vx-step rounded-xl border border-border bg-card p-5"
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-mono text-xs text-muted-foreground">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className={`rounded-md px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+                    f.severity === "krytyczne"
+                      ? "bg-destructive/10 text-destructive"
+                      : f.severity === "dobre"
+                        ? "bg-accent-brand/10 text-accent-brand"
+                        : "bg-surface-muted text-muted-foreground"
+                  }`}
+                >
+                  {f.severity}
+                </span>
+              </div>
+              <h3 className="mt-2.5 text-base font-semibold tracking-tight text-foreground">
+                {f.title}
+              </h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+              {f.impact && (
+                <p className="mt-2 text-sm font-medium text-accent-brand">{f.impact}</p>
+              )}
             </div>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              Tyle robi różnicy 10 punktów procentowych lepszej skuteczności domykania przy
-              Twojej obecnej liczbie zapytań. To poglądowy szacunek — realną liczbę policzymy na
-              rozmowie.
+          ))}
+        </div>
+
+        {a.priorytet && (
+          <div className="mt-8 rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6">
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-accent-brand">
+              <Sparkles className="h-3.5 w-3.5" /> Od czego zacząć
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-foreground sm:text-base">
+              Gdybyś miał zmienić dziś jedną rzecz, zacznij od tego:{" "}
+              <strong className="font-semibold">{a.priorytet.title.toLowerCase()}</strong>. To
+              zwykle najszybszy zwrot przy najmniejszym nakładzie — i nie wymaga zwiększania
+              budżetu na reklamę.
             </p>
           </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href="/blog/"
-              className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
-            >
-              Poczytaj blog w międzyczasie
-            </a>
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
-            >
-              Wróć na stronę
-            </a>
-          </div>
+        )}
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a
+            href="/blog/"
+            className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
+          >
+            Poczytaj blog w międzyczasie
+          </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent-brand"
+          >
+            Wróć na stronę
+          </a>
         </div>
       </Shell>
     );

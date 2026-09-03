@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/kalkulator.html", "destination": "/audyt.html", "permanent": true },
+    { "source": "/kalkulator", "destination": "/audyt.html", "permanent": true }
+  ]
+}
