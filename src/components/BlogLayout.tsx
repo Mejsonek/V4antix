@@ -47,14 +47,14 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
         </article>
         <div className="mt-12 rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">
           <p className="text-sm font-semibold text-foreground sm:text-base">
-            Jeśli Twoja firma żyje dziś głównie z poleceń, sprawdź w 30 sekund, ile Cię to
-            realnie kosztuje.
+            Jeśli Twoja firma żyje dziś głównie z poleceń, sprawdź, ile Cię to realnie kosztuje —
+            kilka pytań, konkretna analiza na końcu.
           </p>
           <a
-            href="/kalkulator.html"
+            href="/audyt.html"
             className="vx-btn-accent mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-2.5 text-sm font-medium text-accent-brand-foreground"
           >
-            Otwórz kalkulator <ArrowRight className="h-4 w-4" />
+            Zrób bezpłatny audyt <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </main>

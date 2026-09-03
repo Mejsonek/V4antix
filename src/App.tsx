@@ -100,7 +100,7 @@ function Nav() {
             <ThemeToggle />
           </div>
           <a
-            href="#audyt"
+            href="/audyt.html"
             className="vx-btn-accent hidden items-center gap-2 rounded-md bg-accent-brand px-4 py-2 text-sm font-medium text-accent-brand-foreground sm:inline-flex"
           >
             {t.nav.audit} <ArrowRight className="h-4 w-4" />
@@ -137,7 +137,7 @@ function Nav() {
             <ThemeToggle />
           </div>
           <a
-            href="#audyt"
+            href="/audyt.html"
             onClick={() => setOpen(false)}
             className="vx-btn-accent mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-4 py-2.5 text-sm font-medium text-accent-brand-foreground sm:hidden"
           >
@@ -220,7 +220,7 @@ function Hero() {
         <Reveal delay={240}>
           <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
             <a
-              href="#audyt"
+              href="/audyt.html"
               className="vx-btn-accent group inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-3 text-sm font-medium text-accent-brand-foreground sm:w-auto"
             >
               {t.hero.cta}
@@ -469,7 +469,7 @@ function Pricing() {
               ))}
             </ul>
             <a
-              href="#audyt"
+              href="/audyt.html"
               className="vx-btn-primary group mt-10 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
             >
               {t.pricing.cta} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -521,7 +521,7 @@ function FAQ() {
 function FinalCTA() {
   const { t } = useSitePrefs();
   return (
-    <section id="audyt" className="bg-surface">
+    <section id="audyt-cta" className="bg-surface">
       <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
         <Reveal>
           <div className="relative overflow-hidden rounded-2xl border border-primary/60 bg-primary p-8 text-primary-foreground shadow-lg sm:p-10 md:p-16">
@@ -544,14 +544,14 @@ function FinalCTA() {
             </p>
             <div className="relative mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
               <a
-                href="mailto:kacper@vantix.pl"
+                href="/audyt.html"
                 className="vx-btn-accent group inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-3 text-sm font-medium text-accent-brand-foreground"
               >
                 {t.finalCta.cta1}
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
               </a>
               <a
-                href="/kalkulator.html"
+                href="/audyt.html"
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-primary-foreground/20 px-5 py-3 text-sm font-medium text-primary-foreground transition hover:border-accent-brand hover:bg-primary-foreground/5"
               >
                 <CalcIcon className="h-4 w-4" /> {t.finalCta.cta2}
@@ -587,7 +587,7 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/kalkulator.html" className="transition hover:text-foreground">
+                <a href="/audyt.html" className="transition hover:text-foreground">
                   Kalkulator
                 </a>
               </li>
