@@ -98,18 +98,20 @@ function BlogIndex() {
       </div>
 
       <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6 sm:py-3">
           <a href="/">
             <VantixLogo />
           </a>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
-            <ThemeToggle />
+            <div className="hidden xs:block">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="relative mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+      <main className="relative mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-14">
         <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
           {ui.eyebrow}
         </span>

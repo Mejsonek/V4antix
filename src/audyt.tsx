@@ -339,7 +339,7 @@ export default function Audyt() {
   return (
     <Shell>
       <div ref={topRef} />
-      <div className="sticky top-[57px] z-40 -mx-4 mb-6 bg-background/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+      <div className="sticky top-[53px] z-40 sm:top-[57px] -mx-4 mb-6 bg-background/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="font-mono uppercase tracking-widest">
             {String(step + 1).padStart(2, "0")} / {String(STEPS.length).padStart(2, "0")}
@@ -375,7 +375,7 @@ export default function Audyt() {
                     key={o.value}
                     type="button"
                     onClick={() => setSingle(current.id, o.value)}
-                    className={`vx-choice rounded-xl border p-4 text-left transition ${
+                    className={`vx-choice rounded-xl border p-4 text-left transition min-h-[60px] ${
                       on
                         ? "border-accent-brand bg-accent-brand/10"
                         : "border-border bg-card hover:border-accent-brand/50"
@@ -420,7 +420,7 @@ export default function Audyt() {
                     key={o.value}
                     type="button"
                     onClick={() => toggleMulti(current.id, o.value)}
-                    className={`vx-choice rounded-xl border p-4 text-left transition ${
+                    className={`vx-choice rounded-xl border p-4 text-left transition min-h-[60px] ${
                       on
                         ? "border-accent-brand bg-accent-brand/10"
                         : "border-border bg-card hover:border-accent-brand/50"
@@ -467,7 +467,7 @@ export default function Audyt() {
                       onChange={(e) =>
                         setAnswers((a) => ({ ...a, [f.id]: Number(e.target.value) || 0 }))
                       }
-                      className="w-full bg-transparent text-2xl font-semibold tracking-tight text-foreground outline-none"
+                      className="w-full bg-transparent text-2xl font-semibold tracking-tight text-foreground outline-none sm:text-3xl"
                     />
                     {f.suffix && (
                       <span className="text-sm text-muted-foreground">{f.suffix}</span>
@@ -573,7 +573,7 @@ export default function Audyt() {
             type="button"
             onClick={back}
             disabled={step === 0}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground disabled:pointer-events-none disabled:opacity-0"
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-3 text-sm font-medium text-muted-foreground transition hover:text-foreground disabled:pointer-events-none disabled:opacity-0"
           >
             <ArrowLeft className="h-4 w-4" /> {D.nav.back}
           </button>
@@ -583,7 +583,7 @@ export default function Audyt() {
               type="button"
               onClick={submit}
               disabled={!canAdvance() || status === "sending"}
-              className="vx-btn-accent inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-6 py-3 text-sm font-semibold text-accent-brand-foreground disabled:opacity-50"
+              className="vx-btn-accent inline-flex items-center justify-center gap-2 rounded-lg bg-accent-brand px-6 py-3.5 text-base font-semibold text-accent-brand-foreground disabled:opacity-50 sm:text-sm"
             >
               {status === "sending" ? (
                 <>
@@ -600,7 +600,7 @@ export default function Audyt() {
               type="button"
               onClick={next}
               disabled={!canAdvance()}
-              className="vx-btn-accent inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-6 py-3 text-sm font-semibold text-accent-brand-foreground disabled:opacity-40"
+              className="vx-btn-accent inline-flex items-center justify-center gap-2 rounded-lg bg-accent-brand px-6 py-3.5 text-base font-semibold text-accent-brand-foreground disabled:opacity-40 sm:text-sm"
             >
               {D.nav.next} <ArrowRight className="h-4 w-4" />
             </button>
@@ -631,13 +631,15 @@ function Shell({ children }: { children: React.ReactNode }) {
         <VantixMark className="h-full w-full" />
       </div>
       <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6 sm:py-3">
           <a href="/">
             <VantixLogo />
           </a>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
-            <ThemeToggle />
+            <div className="hidden xs:block">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -670,7 +672,7 @@ function Input({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-accent-brand"
+        className="mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-3 text-base text-foreground outline-none transition focus:border-accent-brand"
       />
     </label>
   );

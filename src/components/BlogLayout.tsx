@@ -25,17 +25,19 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
         <VantixMark className="h-full w-full" />
       </div>
       <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6 sm:py-3">
           <a href="/">
             <VantixLogo />
           </a>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
-            <ThemeToggle />
+            <div className="hidden xs:block">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
-      <main className="relative mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+      <main className="relative mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-14">
         <a
           href="/blog/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-accent-brand"
@@ -49,7 +51,7 @@ export function BlogLayout({ title, eyebrow, date, children }: Props) {
           {title}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">{date}</p>
-        <article className="prose-vantix mt-8 space-y-5 text-base leading-relaxed text-foreground sm:text-lg">
+        <article className="prose-vantix mt-8 space-y-5 text-[17px] leading-[1.7] text-foreground sm:text-lg">
           {children}
         </article>
         <div className="mt-12 rounded-2xl border border-accent-brand/40 bg-accent-brand/5 p-6 sm:p-8">

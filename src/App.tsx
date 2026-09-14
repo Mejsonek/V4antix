@@ -92,14 +92,14 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-2 sm:flex">
-            <LanguageSwitcher />
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <LanguageSwitcher />
+          <div className="hidden sm:block">
             <ThemeToggle />
           </div>
           <a
             href="/audyt.html"
-            className="vx-btn-accent hidden items-center gap-2 rounded-md bg-accent-brand px-4 py-2 text-sm font-medium text-accent-brand-foreground sm:inline-flex"
+            className="vx-btn-accent hidden items-center gap-2 rounded-md bg-accent-brand px-4 py-2.5 text-sm font-medium text-accent-brand-foreground sm:inline-flex"
           >
             {t.nav.audit} <ArrowRight className="h-4 w-4" />
           </a>
@@ -125,13 +125,13 @@ function Nav() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-surface-muted hover:text-foreground"
+              className="rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition hover:bg-surface-muted hover:text-foreground active:bg-surface-muted"
             >
               {l.label}
             </a>
           ))}
-          <div className="mt-2 flex items-center gap-2 px-3 sm:hidden">
-            <LanguageSwitcher />
+          <div className="mt-3 flex items-center gap-2 px-3 sm:hidden">
+            <LanguageSwitcher full />
             <ThemeToggle />
           </div>
           <a
@@ -186,7 +186,7 @@ function Hero() {
         <VantixMark className="h-full w-full" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 md:py-32 lg:py-40">
+      <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24 md:py-32 lg:py-40">
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-brand" />
@@ -219,7 +219,7 @@ function Hero() {
           <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
             <a
               href="/audyt.html"
-              className="vx-btn-accent group inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-3 text-sm font-medium text-accent-brand-foreground sm:w-auto"
+              className="vx-btn-accent group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent-brand px-5 py-3.5 text-base font-medium text-accent-brand-foreground sm:w-auto sm:text-sm"
             >
               {t.hero.cta}
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -236,7 +236,7 @@ function Promise() {
   const { t } = useSitePrefs();
   return (
     <section className="bg-surface-muted">
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16 md:py-20">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 md:py-20">
         <Reveal className="max-w-2xl">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.promise.eyebrow}
@@ -267,7 +267,7 @@ function Story() {
   const { t } = useSitePrefs();
   return (
     <section id="problem" className="bg-background">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-10 pt-20 sm:px-6 sm:pb-12 sm:pt-24 md:grid-cols-5 md:gap-16 md:pt-32">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-8 pt-14 sm:px-6 sm:pb-12 sm:pt-24 md:grid-cols-5 md:gap-16 md:pt-32">
         <Reveal className="md:col-span-2">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.story.eyebrow}
@@ -289,7 +289,7 @@ function Story() {
           <p>{t.story.p3}</p>
         </Reveal>
       </div>
-      <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24 md:pb-28">
+      <div className="mx-auto max-w-6xl px-4 pb-14 sm:px-6 sm:pb-24 md:pb-28">
         <Reveal>
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             Jak o tym myślę
@@ -306,7 +306,7 @@ function AgencyCallout() {
   const icons = [Paintbrush, UserMinus, BotOff];
   return (
     <section className="bg-surface">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24 md:py-32">
         <Reveal className="max-w-3xl">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.agency.eyebrow}
@@ -343,7 +343,7 @@ function Solution() {
   const icons = [Zap, Target, Cog, TrendingUp];
   return (
     <section id="rozwiazanie" className="bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24 md:py-32">
         <Reveal className="max-w-3xl">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.solution.eyebrow}
@@ -381,7 +381,7 @@ function Process() {
   const icons = [Search, ClipboardList, Rocket];
   return (
     <section id="proces" className="bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24 md:py-32">
         <Reveal className="max-w-3xl">
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.process.eyebrow}
@@ -476,7 +476,7 @@ function Pricing() {
             </ul>
             <a
               href="/audyt.html"
-              className="vx-btn-primary group mt-10 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+              className="vx-btn-primary group mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground sm:mt-10"
             >
               {t.pricing.cta} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
             </a>
@@ -491,7 +491,7 @@ function FAQ() {
   const { t } = useSitePrefs();
   return (
     <section className="bg-background">
-      <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-24 md:py-32">
         <Reveal>
           <span className="text-xs font-medium uppercase tracking-widest text-accent-brand">
             {t.faq.eyebrow}
@@ -503,7 +503,7 @@ function FAQ() {
         <Reveal delay={100}>
           <div className="mt-10 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-sm sm:mt-12">
             {t.faq.items.map((f) => (
-              <details key={f.q} className="group p-5 sm:p-6">
+              <details key={f.q} className="group p-4 sm:p-6">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
                   <span className="text-sm font-medium tracking-tight text-foreground sm:text-base md:text-lg">
                     {f.q}
@@ -528,7 +528,7 @@ function FinalCTA() {
   const { t } = useSitePrefs();
   return (
     <section id="audyt-cta" className="bg-surface">
-      <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-24 md:py-32">
         <Reveal>
           <div className="relative overflow-hidden rounded-2xl border border-primary/60 bg-primary p-8 text-primary-foreground shadow-lg sm:p-10 md:p-16">
             <div
@@ -551,7 +551,7 @@ function FinalCTA() {
             <div className="relative mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
               <a
                 href="/audyt.html"
-                className="vx-btn-accent group inline-flex items-center justify-center gap-2 rounded-md bg-accent-brand px-5 py-3 text-sm font-medium text-accent-brand-foreground"
+                className="vx-btn-accent group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent-brand px-5 py-3.5 text-sm font-medium text-accent-brand-foreground sm:w-auto"
               >
                 {t.finalCta.cta1}
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
