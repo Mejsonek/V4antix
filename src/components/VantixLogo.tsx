@@ -9,11 +9,11 @@ export function VantixLogo({ className = "", showWordmark = true, tone = "dark" 
   const sub = tone === "dark" ? "text-muted-foreground" : "text-primary-foreground/70";
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <VantixMark className="h-7 w-7 shrink-0" />
+      <VantixMark className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" />
       {showWordmark && (
         <span className="flex flex-col leading-none">
-          <span className={`text-[15px] font-bold tracking-[0.02em] ${text}`}>VANTIX</span>
-          <span className={`mt-1 text-[8px] font-semibold uppercase tracking-[0.22em] ${sub}`}>
+          <span className={`text-[13px] font-bold tracking-[0.02em] sm:text-[15px] ${text}`}>VANTIX</span>
+          <span className={`mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.22em] xs:block ${sub}`}>
             Growth Solutions
           </span>
         </span>

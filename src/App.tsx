@@ -77,8 +77,8 @@ function Nav() {
           : "border-b border-transparent bg-background/60 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
-        <a href="#top" className="min-w-0 shrink-0">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 overflow-hidden px-4 py-2.5 sm:gap-4 sm:px-6 sm:py-4">
+        <a href="#top" className="min-w-0 shrink">
           <VantixLogo />
         </a>
         <nav className="hidden gap-8 text-sm text-muted-foreground lg:flex">
@@ -92,7 +92,7 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <LanguageSwitcher />
           <div className="hidden sm:block">
             <ThemeToggle />
@@ -108,7 +108,7 @@ function Nav() {
             onClick={() => setOpen((s) => !s)}
             aria-label={t.nav.menu}
             aria-expanded={open}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-foreground transition hover:border-accent-brand hover:text-accent-brand lg:hidden"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-foreground transition active:scale-95 hover:border-accent-brand hover:text-accent-brand lg:hidden"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -116,8 +116,8 @@ function Nav() {
       </div>
       <div
         className={`overflow-hidden border-t border-border bg-background lg:hidden ${
-          open ? "max-h-96" : "max-h-0"
-        } transition-[max-height] duration-300 ease-out`}
+          open ? "max-h-[80vh]" : "max-h-0"
+        } overflow-y-auto transition-[max-height] duration-300 ease-out`}
       >
         <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 sm:px-6">
           {links.map((l) => (
@@ -125,7 +125,7 @@ function Nav() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition hover:bg-surface-muted hover:text-foreground active:bg-surface-muted"
+              className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-muted-foreground transition hover:bg-surface-muted hover:text-foreground active:bg-surface-muted"
             >
               {l.label}
             </a>

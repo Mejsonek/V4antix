@@ -41,7 +41,7 @@ export function LanguageSwitcher({ full = false }: { full?: boolean }) {
             onClick={() => setLocale(l.code)}
             aria-pressed={on}
             aria-label={l.label}
-            className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition active:scale-95 sm:px-3 ${
+            className={`inline-flex h-9 min-w-[40px] items-center justify-center gap-1.5 rounded-md px-2 text-xs font-semibold transition active:scale-95 sm:px-3 ${
               full ? "flex-1" : ""
             } ${
               on
@@ -50,7 +50,7 @@ export function LanguageSwitcher({ full = false }: { full?: boolean }) {
             }`}
           >
             <span className="text-sm leading-none">{l.flag}</span>
-            <span className={full ? "" : "hidden xs:inline sm:inline"}>{l.short}</span>
+            <span className={full ? "" : "hidden sm:inline"}>{l.short}</span>
           </button>
         );
       })}
